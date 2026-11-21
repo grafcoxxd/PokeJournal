@@ -1,14 +1,11 @@
-import { Cog } from "lucide-react";
 import type { Album } from "@/lib/types";
 
 export function AlbumCover({
   album,
-  onOpen,
-  onEdit
+  onOpen
 }: {
   album: Album;
   onOpen: () => void;
-  onEdit: () => void;
 }) {
   return (
     <article className="album-card">
@@ -30,10 +27,6 @@ export function AlbumCover({
           <span className="album-monogram">{album.title.slice(0, 1).toUpperCase()}</span>
         )}
         <span className="album-clasp" />
-      </button>
-      <button className="edit-album-button" onClick={onEdit}>
-        <Cog size={18} />
-        Album bearbeiten
       </button>
     </article>
   );

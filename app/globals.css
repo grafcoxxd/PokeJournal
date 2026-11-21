@@ -251,19 +251,6 @@ h3 { font-size: 18px; margin-bottom: 0; }
   transition: none;
 }
 
-.edit-album-button {
-  border: 1px solid color-mix(in srgb, var(--cover), #8e776d 30%);
-  background: white;
-  border-radius: 12px;
-  min-height: 35px;
-  font-size: 12px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
 .floating-add {
   position: fixed;
   z-index: 15;
@@ -563,6 +550,8 @@ fieldset { border: 0; margin: 0; padding: 0; }
 .privacy-note { margin-top: 24px; padding: 16px; border: 1px dashed #d9c9bd; border-radius: 15px; background: rgba(255,255,255,0.6); }
 .privacy-note strong { font-size: 12px; }
 .privacy-note p { color: var(--muted); font-size: 11px; line-height: 1.55; margin: 7px 0 0; }
+.app-version { padding: 20px 4px 2px; text-align: center; color: #aa988f; font-size: 10px; }
+.app-version strong { color: #7d6a61; font-weight: 900; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -578,7 +567,6 @@ fieldset { border: 0; margin: 0; padding: 0; }
   .album-grid { gap: 18px 12px; }
   .brand { font-size: 21px; }
   .connection-pill { max-width: 127px; }
-  .edit-album-button { font-size: 10px; }
   .search-result { grid-template-columns: 56px 1fr 34px; gap: 9px; }
 }
 

@@ -19,6 +19,7 @@ import { CardDetail } from "@/components/CardDetail";
 import { useJournal } from "@/hooks/useJournal";
 import type { Album, Card, CardCandidate, Tab } from "@/lib/types";
 import { createAlbum, EMPTY_JOURNAL } from "@/lib/types";
+import { APP_VERSION } from "@/lib/version";
 
 interface SlotLocation {
   albumId: string;
@@ -348,7 +349,6 @@ export default function Home() {
                     album={album}
                     key={album.id}
                     onOpen={() => { setOpenAlbumId(album.id); setPageIndex(0); }}
-                    onEdit={() => setEditorId(album.id)}
                   />
                 ))}
               </div>
@@ -533,6 +533,9 @@ export default function Home() {
             <div className="privacy-note">
               <strong>Hinweis zur IP-Zuordnung</strong>
               <p>Die IP bildet nur eine komfortable, passwortlose Gerätezuordnung. Bei geteilten IP-Adressen, VPNs oder Provider-Wechseln kann die Zuordnung gemeinsam oder instabil sein. Verwende daher regelmäßig den Export.</p>
+            </div>
+            <div className="app-version">
+              PokéJournal <strong>Version {APP_VERSION}</strong>
             </div>
           </section>
         )}
