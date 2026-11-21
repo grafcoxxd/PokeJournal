@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findVariants, hydrateTcgdexCard } from "@/lib/cards";
+import { findVariants } from "@/lib/cards";
 import type { CardCandidate } from "@/lib/types";
 import { parseCardReference, ValidationError } from "@/lib/validation";
 
@@ -14,9 +14,12 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
-    const reference = await hydrateTcgdexCard(card);
-    const variants = await findVariants(reference);
-    return NextResponse.json({ reference, variants, partial: variants.length === 0 });
+    const result = await findVariants(card);
+    return NextResponse.json({
+      reference: result.reference,
+      variants: result.variants,
+      partial: result.variants.length === 0
+    });
   } catch (error) {
     console.error("Sprach-Pendants:", error);
     return NextResponse.json({

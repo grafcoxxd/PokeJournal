@@ -101,6 +101,16 @@ async function corpusJson<T>(path: string): Promise<T> {
   }
 }
 
+const setCache = new Map<string, Promise<CorpusSet>>();
+
+function loadCorpusSet(id: string) {
+  const cached = setCache.get(id);
+  if (cached) return cached;
+  const request = corpusJson<CorpusSet>(`sets/${id}.json`);
+  setCache.set(id, request);
+  return request;
+}
+
 function normalized(value: string) {
   return value
     .normalize("NFKC")
@@ -273,7 +283,7 @@ export async function findCardCorpusByCard(reference: CardCandidate) {
 export async function cardCorpusCounterparts(reference: CardCandidate) {
   const pointer = await findCardCorpusByCard(reference);
   if (!pointer) return [];
-  const sourceSet = await corpusJson<CorpusSet>(`sets/${pointer.set}.json`);
+  const sourceSet = await loadCorpusSet(pointer.set);
   const sourceCard = sourceSet.cards.find((card) => card.id === pointer.card);
   if (!sourceCard) return [];
   const paintingId = sourceCard.painting?.id;
@@ -285,7 +295,7 @@ export async function cardCorpusCounterparts(reference: CardCandidate) {
   );
   const results = await Promise.allSettled(
     pointers.map(async (item) => {
-      const targetSet = await corpusJson<CorpusSet>(`sets/${item.set}.json`);
+      const targetSet = await loadCorpusSet(item.set);
       const targetCard = targetSet.cards.find((card) => card.id === item.id);
       if (!targetCard) return null;
       return {
@@ -296,9 +306,42 @@ export async function cardCorpusCounterparts(reference: CardCandidate) {
       };
     })
   );
-  return results.flatMap((result) =>
+  const candidates = results.flatMap((result) =>
     result.status === "fulfilled" && result.value ? [result.value] : []
   );
+  return Promise.all(candidates.map(resolveCardCorpusImage));
+}
+
+export async function resolveCardCorpusImage(candidate: CardCandidate) {
+  if (candidate.image || !candidate.corpusSet || !candidate.corpusCard) return candidate;
+  try {
+    const sourceSet = await loadCorpusSet(candidate.corpusSet);
+    const sourceCard = sourceSet.cards.find((card) => card.id === candidate.corpusCard);
+    if (!sourceCard?.painting?.id) return candidate;
+    const painting = await corpusJson<CorpusPainting>(
+      `paintings/${sourceCard.painting.id}.json`
+    );
+    const sameSetPointers = painting.cards
+      .flat()
+      .filter((pointer) =>
+        pointer.set === candidate.corpusSet &&
+        pointer.id !== candidate.corpusCard
+      );
+    for (const pointer of sameSetPointers) {
+      const replacement = sourceSet.cards.find((card) => card.id === pointer.id);
+      const image = pictureUrl(replacement?.picture?.front?.image);
+      if (!image) continue;
+      return {
+        ...candidate,
+        image,
+        imageFallback: true,
+        imageFallbackLanguage: candidate.language
+      };
+    }
+  } catch {
+    return candidate;
+  }
+  return candidate;
 }
 
 export async function localizedCorpusNames(query: string) {

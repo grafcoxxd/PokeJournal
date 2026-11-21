@@ -4,6 +4,7 @@ import {
   cardCorpusCounterparts,
   normalizeCardNumber,
   localizedCorpusNames,
+  resolveCardCorpusImage,
   searchCardCorpus
 } from "@/lib/cardcorpus";
 
@@ -275,6 +276,11 @@ async function fillMissingImages(cards: CardCandidate[]) {
   await Promise.all(
     cards.map(async (card) => {
       if (card.image) return;
+      if (card.source === "cardcorpus") {
+        const resolved = await resolveCardCorpusImage(card);
+        Object.assign(card, resolved);
+        if (card.image) return;
+      }
       const configuredSource =
         fallbackProviders.find(
           (candidate) =>
@@ -544,6 +550,14 @@ export async function findVariants(reference: CardCandidate) {
   ]);
   const directCorpusCounterparts =
     directCorpusResult.status === "fulfilled" ? directCorpusResult.value : [];
+  if (directCorpusCounterparts.length) {
+    return {
+      reference: hydratedReference,
+      variants: directCorpusCounterparts
+        .filter((card) => card.language !== hydratedReference.language)
+        .sort((left, right) => left.language.localeCompare(right.language))
+    };
+  }
   const localizedNames =
     localizedNamesResult.status === "fulfilled"
       ? localizedNamesResult.value
@@ -674,9 +688,10 @@ export async function findVariants(reference: CardCandidate) {
     })
     .filter((card) => card.score! >= 0.25)
     .sort((a, b) => b.score! - a.score!);
-  return (await enrichWithImageHash(hydratedReference, scored.slice(0, 18))).filter(
+  const variants = (await enrichWithImageHash(hydratedReference, scored.slice(0, 8))).filter(
     (card) => card.score! >= 0.3
   );
+  return { reference: hydratedReference, variants };
 }
 
 function pointerIdentity(card: CardCandidate) {

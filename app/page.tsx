@@ -8,6 +8,7 @@ import {
   ChevronRight,
   CircleHelp,
   Download,
+  Upload,
   Plus,
   Search,
   Settings,
@@ -20,6 +21,7 @@ import { useJournal } from "@/hooks/useJournal";
 import type { Album, Card, CardCandidate, Tab } from "@/lib/types";
 import { createAlbum, EMPTY_JOURNAL } from "@/lib/types";
 import { APP_VERSION } from "@/lib/version";
+import { parseJournal } from "@/lib/validation";
 
 interface SlotLocation {
   albumId: string;
@@ -42,12 +44,12 @@ const languageLabels: Record<string, string> = {
   "es-419": "Español (LATAM)",
   nl: "Nederlands",
   pl: "Polski",
-  ja: "日本語",
-  ko: "한국어",
-  "zh-cn": "简体中文",
-  "zh-tw": "繁體中文",
-  th: "ไทย",
-  id: "Indonesia"
+  ja: "日本語 (JA)",
+  ko: "한국어 (KO)",
+  "zh-cn": "简体中文 (CV)",
+  "zh-tw": "繁體中文 (CT)",
+  th: "ไทย (TH)",
+  id: "Indonesia (ID)"
 };
 
 export default function Home() {
@@ -65,6 +67,7 @@ export default function Home() {
   const [searchPage, setSearchPage] = useState(1);
   const [searchTotalPages, setSearchTotalPages] = useState(1);
   const [searchTotal, setSearchTotal] = useState(0);
+  const [importError, setImportError] = useState("");
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [activeLanguages, setActiveLanguages] = useState([
@@ -518,6 +521,39 @@ export default function Home() {
               <span><strong>Journal exportieren</strong><small>Sicherheitskopie als JSON</small></span>
               <ChevronRight />
             </button>
+            <label className="settings-row import-row">
+              <Upload />
+              <span>
+                <strong>Journal importieren</strong>
+                <small>Exportierte JSON-Datei auf diese Identität laden</small>
+              </span>
+              <ChevronRight />
+              <input
+                className="visually-hidden"
+                type="file"
+                accept="application/json,.json"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  event.target.value = "";
+                  if (!file) return;
+                  setImportError("");
+                  try {
+                    const imported = parseJournal(JSON.parse(await file.text()));
+                    if (!confirm(
+                      `„${file.name}“ importieren? Der aktuelle Journal-Stand wird ersetzt.`
+                    )) return;
+                    updateJournal(() => imported);
+                  } catch (error) {
+                    setImportError(
+                      error instanceof Error
+                        ? `Import fehlgeschlagen: ${error.message}`
+                        : "Import fehlgeschlagen."
+                    );
+                  }
+                }}
+              />
+            </label>
+            {importError && <p className="notice error">{importError}</p>}
             <button
               className="settings-row"
               onClick={() => {
