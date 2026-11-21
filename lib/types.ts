@@ -11,6 +11,7 @@ export interface Card {
   image: string;
   imageFallback?: boolean;
   imageFallbackLanguage?: string;
+  notes?: string;
   hp?: number;
   pokedexId?: number;
   illustrator?: string;

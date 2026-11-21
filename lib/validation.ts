@@ -48,6 +48,7 @@ function validateCard(value: unknown, path: string) {
   if (!Array.isArray(card.abilities) || card.abilities.some((item) => typeof item !== "string")) {
     fail(`${path}.abilities ist ungültig.`);
   }
+  if (card.notes !== undefined) text(card.notes, `${path}.notes`, { max: 4000, allowEmpty: true });
   finiteNonNegative(card.wishValue, `${path}.wishValue`);
   return card;
 }

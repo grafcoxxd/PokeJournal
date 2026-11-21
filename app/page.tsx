@@ -297,29 +297,25 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <div className="page-caption">Seite {pageIndex + 1}</div>
-            </div>
-            <div className="page-navigation">
-              <button
-                className="round-button"
-                disabled={pageIndex === 0}
-                onClick={() => setPageIndex((value) => value - 1)}
-                aria-label="Vorherige Seite"
-              >
-                <ChevronLeft />
-              </button>
-              <div>
+              <div className="page-navigation in-book">
+                <button
+                  className="round-button"
+                  disabled={pageIndex === 0}
+                  onClick={() => setPageIndex((value) => value - 1)}
+                  aria-label="Vorherige Seite"
+                >
+                  <ChevronLeft />
+                </button>
                 <strong>Seite {pageIndex + 1} / {openAlbum.pages.length}</strong>
-                <span>Nur eine Seite im Fokus</span>
+                <button
+                  className="round-button"
+                  disabled={pageIndex >= openAlbum.pages.length - 1}
+                  onClick={() => setPageIndex((value) => value + 1)}
+                  aria-label="Nächste Seite"
+                >
+                  <ChevronRight />
+                </button>
               </div>
-              <button
-                className="round-button"
-                disabled={pageIndex >= openAlbum.pages.length - 1}
-                onClick={() => setPageIndex((value) => value + 1)}
-                aria-label="Nächste Seite"
-              >
-                <ChevronRight />
-              </button>
             </div>
             <div className="page-manage-actions">
               <button className="secondary-button" onClick={() => {
