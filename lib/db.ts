@@ -18,9 +18,13 @@ export async function loadJournal(ownerHash: string) {
   `;
   const row = rows[0] as { data?: JournalData; updated_at?: Date } | undefined;
   if (!row) {
-    return { data: EMPTY_JOURNAL, updatedAt: undefined };
+    return { data: EMPTY_JOURNAL, updatedAt: undefined, exists: false };
   }
-  return { data: row.data ?? EMPTY_JOURNAL, updatedAt: row.updated_at?.toISOString?.() };
+  return {
+    data: row.data ?? EMPTY_JOURNAL,
+    updatedAt: row.updated_at?.toISOString?.(),
+    exists: true
+  };
 }
 
 export async function saveJournal(ownerHash: string, data: JournalData) {

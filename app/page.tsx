@@ -228,7 +228,7 @@ export default function Home() {
         </button>
         <div className={`connection-pill ${connection.connected ? "online" : "offline"}`}>
           <span className="connection-dot" />
-          <span>{connection.connected ? "Verbunden" : "Demo"}<small>{connection.message.replace("Verbunden", "IP-basiert")}</small></span>
+          <span>{connection.connected ? "Verbunden" : "Demo"}<small>{connection.message.replace("Verbunden", "Gerätebasiert")}</small></span>
         </div>
       </header>
 
@@ -491,11 +491,11 @@ export default function Home() {
             <article className="settings-card status-card">
               <div className={`status-orb ${connection.connected ? "online" : ""}`} />
               <div>
-                <h2>{connection.connected ? "IP-basierter Speicher" : "Lokaler Demo-Speicher"}</h2>
+                <h2>{connection.connected ? "Gerätebasierter Speicher" : "Lokaler Demo-Speicher"}</h2>
                 <p>{connection.message}</p>
                 <small>
                   {connection.connected
-                    ? "Neon PostgreSQL speichert den Stand auch, wenn Render schläft. IP-Adressen selbst werden nicht in der Datenbank abgelegt."
+                    ? "Neon PostgreSQL speichert den Stand auch, wenn Render schläft. Die zufällige Geräte-ID liegt in einem HttpOnly-Cookie und wird nur gehasht persistiert; weder MAC-Adresse noch IP wird gespeichert."
                     : "Ohne DATABASE_URL bleibt die App ausdrücklich im Browser-Demo-Modus. Produktion benötigt Neon und wird nicht lokal als dauerhaft ausgegeben."}
                 </small>
               </div>
@@ -567,8 +567,8 @@ export default function Home() {
               <ChevronRight />
             </button>
             <div className="privacy-note">
-              <strong>Hinweis zur IP-Zuordnung</strong>
-              <p>Die IP bildet nur eine komfortable, passwortlose Gerätezuordnung. Bei geteilten IP-Adressen, VPNs oder Provider-Wechseln kann die Zuordnung gemeinsam oder instabil sein. Verwende daher regelmäßig den Export.</p>
+              <strong>Hinweis zur Geräte-Zuordnung</strong>
+              <p>Websites können MAC-Adressen nicht auslesen. Die Zuordnung erfolgt deshalb mit einer langläufigen, zufälligen Geräte-ID in diesem Browser. Ein Browser- oder Gerätewechsel erfordert den JSON-Import; auch das Löschen der Website-Cookies trennt die Zuordnung. Verwende daher regelmäßig den Export.</p>
             </div>
             <div className="app-version">
               PokéJournal <strong>Version {APP_VERSION}</strong>

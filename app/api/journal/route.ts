@@ -12,9 +12,21 @@ export async function GET(request: NextRequest) {
   }
   try {
     const identity = identityForRequest(request);
-    const journal = await loadJournal(identity.ownerHash);
+    let journal = await loadJournal(identity.ownerHash);
+    if (!journal.exists) {
+      const legacyJournal = await loadJournal(identity.legacyOwnerHash);
+      if (legacyJournal.exists) {
+        await saveJournal(identity.ownerHash, legacyJournal.data);
+        journal = await loadJournal(identity.ownerHash);
+      }
+    }
     return attachIdentityCookie(
-      NextResponse.json({ ...journal, connected: true, storage: "neon" }),
+      NextResponse.json({
+        data: journal.data,
+        updatedAt: journal.updatedAt,
+        connected: true,
+        storage: "neon"
+      }),
       identity
     );
   } catch (error) {

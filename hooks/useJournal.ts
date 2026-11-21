@@ -48,7 +48,7 @@ export function useJournal() {
         setConnection({
           connected: true,
           storage: "neon",
-          message: "IP-basiert verbunden",
+          message: "Gerätebasiert verbunden",
           updatedAt: payload.updatedAt
         });
       })
@@ -94,7 +94,7 @@ export function useJournal() {
       setConnection((current) => ({
         ...current,
         connected: true,
-        message: "IP-basiert verbunden",
+        message: "Gerätebasiert verbunden",
         updatedAt: payload.updatedAt
       }));
       return;
