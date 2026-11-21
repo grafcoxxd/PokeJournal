@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
   const languages = (request.nextUrl.searchParams.get("languages") ?? "de,en,ja,ko,zh-cn")
     .split(",")
     .map((language) => language.trim().toLowerCase());
+  const requestedPage = Number(request.nextUrl.searchParams.get("page") ?? 1);
+  const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   if (!query && !setCode && !number) {
     return NextResponse.json(
       { message: "Name, Set-Code oder Kartennummer ist erforderlich." },
@@ -15,9 +17,16 @@ export async function GET(request: NextRequest) {
     );
   }
   try {
-    const cards = await searchCards(query, languages, setCode || undefined, number || undefined);
+    const result = await searchCards(
+      query,
+      languages,
+      setCode || undefined,
+      number || undefined,
+      false,
+      { page, pageSize: 20 }
+    );
     return NextResponse.json({
-      cards,
+      ...result,
       sources: [
         "TCGdex",
         "Pokémon TCG",

@@ -302,12 +302,36 @@ async function fillMissingImages(cards: CardCandidate[]) {
   return cards;
 }
 
+export interface CardSearchPage {
+  cards: CardCandidate[];
+  total: number;
+  page: number;
+  totalPages: number;
+  pageSize: number;
+}
+
+export function searchCards(
+  query: string,
+  languages?: string[],
+  setCode?: string,
+  number?: string,
+  hydrate?: boolean
+): Promise<CardCandidate[]>;
+export function searchCards(
+  query: string,
+  languages: string[],
+  setCode: string | undefined,
+  number: string | undefined,
+  hydrate: boolean,
+  pagination: { page: number; pageSize: number }
+): Promise<CardSearchPage>;
 export async function searchCards(
   query: string,
   languages = ["de", "en", "ja"],
   setCode?: string,
   number?: string,
-  hydrate = false
+  hydrate = false,
+  pagination?: { page: number; pageSize: number }
 ) {
   const directIdentitySearch = Boolean(setCode && number);
   const effectiveQuery = directIdentitySearch ? "" : query;
@@ -358,8 +382,7 @@ export async function searchCards(
       deduplicated.set(key, card);
     }
   }
-  const enriched = await fillMissingImages([...deduplicated.values()]);
-  return enriched.sort((a, b) => {
+  const sorted = [...deduplicated.values()].sort((a, b) => {
     const exactA = normalizedSetCode(a.setCode) === normalizedSetCode(setCode ?? "") ? 1 : 0;
     const exactB = normalizedSetCode(b.setCode) === normalizedSetCode(setCode ?? "") ? 1 : 0;
     if (exactA !== exactB) return exactB - exactA;
@@ -370,6 +393,22 @@ export async function searchCards(
     const corpusB = b.source === "cardcorpus" ? 1 : 0;
     return corpusB - corpusA;
   });
+  if (!pagination) {
+    return fillMissingImages(sorted);
+  }
+  const pageSize = Math.min(50, Math.max(1, pagination.pageSize));
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const page = Math.min(totalPages, Math.max(1, pagination.page));
+  const pageCards = await fillMissingImages(
+  sorted.slice((page - 1) * pageSize, page * pageSize)
+  );
+  return {
+  cards: pageCards,
+    total: sorted.length,
+    page,
+    totalPages,
+    pageSize
+  };
 }
 
 function normalizedSetCode(value: string) {

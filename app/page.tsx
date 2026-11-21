@@ -61,6 +61,9 @@ export default function Home() {
   const [setCode, setSetCode] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [results, setResults] = useState<CardCandidate[]>([]);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchTotalPages, setSearchTotalPages] = useState(1);
+  const [searchTotal, setSearchTotal] = useState(0);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [activeLanguages, setActiveLanguages] = useState([
@@ -168,7 +171,7 @@ export default function Home() {
     setPageIndex((current) => Math.max(0, current - 1));
   }
 
-  async function runSearch(event?: FormEvent) {
+  async function runSearch(event?: FormEvent, requestedPage = 1) {
     event?.preventDefault();
     if (!query.trim() && !setCode.trim() && !cardNumber.trim()) {
       setSearchError("Gib mindestens einen Namen, Set-Code oder eine Kartennummer ein.");
@@ -181,12 +184,16 @@ export default function Home() {
     if (setCode.trim()) params.set("set", setCode.trim());
     if (cardNumber.trim()) params.set("number", cardNumber.trim());
     params.set("languages", activeLanguages.join(","));
+    params.set("page", String(requestedPage));
     try {
       const response = await fetch(`/api/cards?${params}`);
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.message);
       setResults(payload.cards);
-      if (payload.cards.length === 0) setSearchError("Keine passenden Karten gefunden.");
+      setSearchPage(payload.page ?? 1);
+      setSearchTotalPages(payload.totalPages ?? 1);
+      setSearchTotal(payload.total ?? payload.cards.length);
+      if (payload.total === 0) setSearchError("Keine passenden Karten gefunden.");
     } catch (error) {
       setSearchError(error instanceof Error ? error.message : "Suche fehlgeschlagen.");
     } finally {
@@ -376,7 +383,7 @@ export default function Home() {
                 <button onClick={() => setPendingPlacement(null)} aria-label="Ziel löschen">×</button>
               </div>
             )}
-            <form className="search-form" onSubmit={runSearch}>
+            <form className="search-form" onSubmit={(event) => runSearch(event, 1)}>
               <label className="field">
                 <span>Name</span>
                 <span className="search-field large">
@@ -445,6 +452,30 @@ export default function Home() {
                 </article>
               ))}
             </div>
+            {results.length > 0 && (
+              <div className="search-pagination">
+                <button
+                  className="round-button"
+                  disabled={searching || searchPage <= 1}
+                  onClick={() => runSearch(undefined, searchPage - 1)}
+                  aria-label="Vorherige Ergebnisseite"
+                >
+                  <ChevronLeft />
+                </button>
+                <div>
+                  <strong>Seite {searchPage} / {searchTotalPages}</strong>
+                  <span>{searchTotal} Treffer · 20 je Seite</span>
+                </div>
+                <button
+                  className="round-button"
+                  disabled={searching || searchPage >= searchTotalPages}
+                  onClick={() => runSearch(undefined, searchPage + 1)}
+                  aria-label="Nächste Ergebnisseite"
+                >
+                  <ChevronRight />
+                </button>
+              </div>
+            )}
             {!results.length && !searching && !searchError && (
               <div className="search-hint">
                 <CircleHelp size={36} />
