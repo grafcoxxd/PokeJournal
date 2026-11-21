@@ -1,0 +1,15 @@
+Ich möchte, dass du mir einen prompt für eine andere AI schreibst, die mir dann einen Code schreibt.
+
+Allgemeines:
+Eine fürs smartphone optimierte Website, die zur Übersicht von Pokemonkarten, die man sich kaufen möchte dient.
+
+Funktionen:
+- "Anmeldung" per IP adresse (ohne passwort, die IP wird sich gemerkt und änderungen der website werden für eine IP gspeichert, sodass jede IP (also jeder nutzer auf seinem eigenen gerät) ihr eignes journal machen kann.
+- Kartenalben erstellen, bearbeiten und löschen
+- Kartenalben öffnen, einsehen, seiten blättern
+- Ein album ist 3x3 kartenfächer pro seite groß, man kann seiten und karten hinzufügen, verschieben oder löschen
+- Pokémonkarten (Alle sprachen, sowohl europäische, als auch asiatische) per code des boosterpacks und kartennummer finden.
+- Gefundene Karten einem Album hinzufügen.
+- Den Karten einen Wunsch-Wert in Euro ber eingabefeld zuweisen (um zu markieren, wie viel man bereit wäre für diese karte zu bezahlen, wenn man sie mal irgendwo in einem laden findet.
+- beim klick auf eine karte, diese vergrößern und die jeweiligen anderssprachigen (alle verfügbaren sprachen, europäisch und asiatisch) pendants dieser karte daneben auflisten, damit man sich durch die sprachen klicken kann und damit auch die im album angezeigte version dieser karte auswählen.
+- Die gleiche karte, hat im europäischen raum meist eine andere set- und kartennummer als in asiatischen ländern, wie japan, korea oder china, daher ist es etwas schwieriger mithilfe einer europäischen karte, nicht nur die anderen europäisschen äquivalente, sondern auch die asiatischen anzeigen zu lassen. Dafür habe ich aber ein kleines workaround gefunden. Bitte sieh dir dafür den text der von mir angehängten datei an.

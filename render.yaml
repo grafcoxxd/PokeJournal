@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pokejournal
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run db:migrate && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: IDENTITY_SECRET
+        generateValue: true
+      - key: POKEMON_TCG_API_KEY
+        sync: false
