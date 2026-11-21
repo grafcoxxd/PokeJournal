@@ -8,5 +8,12 @@ if (!url) {
 
 const sql = neon(url);
 const migration = await readFile(new URL("../migrations/001_init.sql", import.meta.url), "utf8");
-await sql.query(migration);
+const statements = migration
+  .split(";")
+  .map((statement) => statement.trim())
+  .filter(Boolean);
+
+for (const statement of statements) {
+  await sql.query(statement);
+}
 console.log("PokéJournal-Datenbank ist aktuell.");
