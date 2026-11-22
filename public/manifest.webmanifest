@@ -1,0 +1,23 @@
+{
+  "name": "PokéJournal",
+  "short_name": "PokéJournal",
+  "description": "Dein persönliches Pokémon-Karten-Kaufjournal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f3ec",
+  "theme_color": "#f8f3ec",
+  "icons": [
+    {
+      "src": "/icons/pokejournal-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/pokejournal-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

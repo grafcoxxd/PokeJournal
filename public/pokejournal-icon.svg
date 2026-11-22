@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7c6d0"/>
+      <stop offset="1" stop-color="#bce3d0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="92" y="72" width="328" height="368" rx="50" fill="#b9d9ff" stroke="#4e3a34" stroke-width="14"/>
+  <path d="M105 121H406V391H105" fill="none" stroke="#70889b" stroke-width="8" stroke-dasharray="20 14"/>
+  <path d="M359 196h76v104h-76c-13-17-13-87 0-104Z" fill="#91bddf" stroke="#4e3a34" stroke-width="12"/>
+  <circle cx="379" cy="248" r="24" fill="#f5dc86" stroke="#4e3a34" stroke-width="11"/>
+  <circle cx="256" cy="253" r="89" fill="#fffdf9" stroke="#4e3a34" stroke-width="14"/>
+  <path d="M167 253h178" stroke="#4e3a34" stroke-width="14"/>
+  <path d="M167 253a89 89 0 0 1 178 0" fill="#ef7c7c"/>
+  <circle cx="256" cy="253" r="28" fill="#f5dc86" stroke="#4e3a34" stroke-width="14"/>
+  <text x="256" y="400" text-anchor="middle" font-family="Arial Rounded MT Bold,Arial,sans-serif" font-size="62" font-weight="700" fill="#4e3a34">PJ</text>
+</svg>
